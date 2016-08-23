@@ -1,0 +1,19 @@
+{
+  "name": "bolt-simple-comment-system",
+  "authors": [
+    "Nicolas Béhier-Dévigne"
+  ],
+  "description": "Bolt extension to add simple local comment system",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  }
+}
