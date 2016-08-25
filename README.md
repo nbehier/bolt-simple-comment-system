@@ -22,6 +22,7 @@ Simple comment system - Bolt Extension
 
 ### Set up
 1. You have to add `comment` ContentType. Connect to your admin, got to "Configuration/Contenttypes" and add the following :
+
  ```(yml)
 comments:
     name: Comments
@@ -46,6 +47,7 @@ comments:
     icon_many: "fa:comments"
     icon_one: "fa:comment"
  ```
+
 Then, you have update your database, got to "Configuration/Check database" and click on "Update the database" button.
 
 ### License
