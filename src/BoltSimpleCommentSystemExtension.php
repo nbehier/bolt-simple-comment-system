@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
  */
 class BoltSimpleCommentSystemExtension extends SimpleExtension
 {
+
     /**
      * The callback function when {{ bscs_comments() }} is used in a template.
      *
@@ -43,7 +44,7 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
             'csrf_protection' => true,
             'linked_entity'   => $context['slug'],
         ];
-
+//https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2/creer-des-formulaires-avec-symfony2
         $form = $app['form.factory']->createBuilder(new AddComment(), $data)
                                     ->getForm();
 
@@ -83,6 +84,7 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
     {
         // https://docs.bolt.cm/3.0/extensions/building/web-assets#snippets
         return [
+            (new JavaScript('blueimp-md5/js/md5.min.js'))->setLate(true)->setPriority(98),
             (new JavaScript('simplecommentsystem.js'))->setLate(true)->setPriority(99),
             (new Stylesheet('simplecommentsystem.css'))
         ];

@@ -10,51 +10,82 @@
 
     "use strict";
 
-        // undefined is used here as the undefined global variable in ECMAScript 3 is
-        // mutable (ie. it can be changed by someone else). undefined isn't really being
-        // passed in so we can ensure the value of it is truly undefined. In ES5, undefined
-        // can no longer be modified.
-
-        // window and document are passed through as local variables rather than global
-        // as this (slightly) quickens the resolution process and can be more efficiently
-        // minified (especially when both are regularly referenced in your plugin).
-
         // Create the defaults once
         var pluginName = "jqSimpleCommentsSystem",
-            defaults = {
-                propertyName: "value"
+            defaults   = {
+                honeypotSelector:        '#bscsDetect',
+                buttonSelector:          '#addcomment_post',
+                emailAuthorSelector:     '#addcomment_email',
+                nameAuthorSelector:      '#addcomment_name',
+                bodySelector:            '#addcomment_body',
+                avatarContainerSelector: '.bscsFieldAvatar'
             };
 
         // The actual plugin constructor
         function Plugin ( element, options ) {
-            this.element = element;
-
-            // jQuery has an extend method which merges the contents of two or
-            // more objects, storing the result in the first object. The first object
-            // is generally empty as we don't want to alter the default options for
-            // future instances of the plugin
-            this.settings = $.extend( {}, defaults, options );
+            this.form      = element;
+            this.settings  = $.extend( {}, defaults, options );
             this._defaults = defaults;
-            this._name = pluginName;
+            this._name     = pluginName;
+
             this.init();
         }
 
         // Avoid Plugin.prototype conflicts
         $.extend( Plugin.prototype, {
             init: function() {
-
-                // Place initialization logic here
-                // You already have access to the DOM element and
-                // the options via the instance, e.g. this.element
-                // and this.settings
-                // you can add more functions like the one below and
-                // call them like the example below
-                this.yourOtherFunction( "jQuery Boilerplate" );
+                this.secureForm();
+                this.addFormEvents();
+                this.displayAvatar();
             },
-            yourOtherFunction: function( text ) {
+            secureForm: function() {},
+            addFormEvents: function() {
+                var _this = this;
 
-                // some logic
-                $( this.element ).text( text );
+                $(this.form).on('submit', function(event) {
+                    event.preventDefault();
+
+                    if ( _this.hasDetectSpam() ) {
+                        console.log("spam detect !");
+                        return;
+                    }
+
+                    if ( _this.isValidAuthor() ) {
+                        _this.submit();
+                    }
+                    else {
+                        _this.setDraft();
+                    }
+                });
+
+                $(this.settings.emailAuthorSelector).on('change', function() {
+                    _this.displayAvatar();
+                });
+            },
+            hasDetectSpam: function() {
+                return ( $(this.settings.honeypotSelector).val() != '' );
+            },
+            isValidAuthor: function() {
+                // @todo check email
+                return ( $(this.settings.emailAuthorSelector).val() != '' && $(this.settings.nameAuthorSelector).val() != '' );
+            },
+            setDraft: function() {
+                console.log("Not valid author !");
+            },
+            displayAvatar: function() {
+                var gravatar = "https://www.gravatar.com/avatar/XXX?s=40&d=mm",
+                       email = $(this.settings.emailAuthorSelector).val();
+
+                if (email != '') {
+                    email    = md5(email.trim().toLowerCase() );
+                    gravatar = gravatar.replace('XXX', email);
+                }
+
+                $(this.settings.avatarContainerSelector).html('<img src="' + gravatar + '" alt="avatar"/>');
+            },
+            submit: function() {
+                // @todo submit
+                console.log('submit');
             }
         } );
 
@@ -70,3 +101,7 @@
         };
 
 } )( jQuery, window, document );
+
+$( function() {
+    $( "#bscsForm" ).jqSimpleCommentsSystem({});
+} );

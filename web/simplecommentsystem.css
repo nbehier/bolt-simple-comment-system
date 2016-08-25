@@ -1,0 +1,66 @@
+#bscsFormContainer {}
+#bscsForm {
+    background-color: #ccc;
+    border: 1px solid #999;
+    color: #333;
+    padding: 0;
+    position: relative;
+}
+    #bscsForm textarea,
+    #bscsForm input {
+        margin: 0;
+    }
+
+.bscsFormBody {
+    background-color: #eee;
+    padding: 4px;
+}
+    .bscsFieldRow {
+        display: flex;
+        flex: row wrap;
+        justify-content: flex-end;
+    }
+    .bscsFieldAvatar {
+        margin-right: 4px;
+    }
+        .bscsFieldAvatar img {
+            margin: 0;
+            max-width: 100%;
+        }
+    .bscsFieldName {
+        flex-grow: 1;
+        margin-right: 4px;
+    }
+    .bscsFieldEmail {
+        flex-grow: 1;
+    }
+    .bscsFieldBody {
+        margin-bottom: 4px;
+    }
+
+.bscsFormFooter {
+    align-items: stretch;
+    display: flex;
+    flex: row wrap;
+    justify-content: space-between;
+}
+    .bscsFormFooter .bscsFieldRow {
+        margin-bottom: 0;
+    }
+    .bscsFieldNotify {
+        align-items: center;
+        padding-left: 1em;
+    }
+    .bscsFieldAction {
+        width: 20%;
+    }
+    .bscsFieldAction button {
+        background-color: #666;
+        color: #fff;
+        height: 100%;
+        line-height: 2em;
+        width: 100%;
+    }
+        .bscsFieldAction button:hover {
+            background-color: #444;
+        }

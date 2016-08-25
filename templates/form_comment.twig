@@ -1,35 +1,35 @@
 {% set extension_config = app['bolt-simple-comment.config'] %}
 <div id="bscsFormContainer">
-    <h4>Create a new reply</h4>
-    {{ form_start(form) }}
-        {{ form_row(form.body) }}
-        <br>
-        {{ form_widget(form.notify) }}
-        {{ form_label(form.notify) }}
-        <br>
-        {{ form_label(form.name) }}
-        {{ form_widget(form.name) }}
-        <br>
-        {{ form_label(form.email) }}
-        {{ form_widget(form.email) }}
-        <br>
+    <h4>{{ __('Add a comment') }}</h4>
+    {{ form_errors(form) }}
+    {{ form_start(form, { attr: { id: 'bscsForm' } } ) }}
+        <div class="bscsFormBody">
+            <div class="bscsFieldRow bscsFieldBody">
+                {{ form_widget(form.body) }}
+            </div>
+            <div class="bscsFieldRow">
+                <div class="bscsFieldAvatar"></div>
+                <div class="bscsFieldName">
+                    {{ form_widget(form.name) }}
+                </div>
+                <div class="bscsFieldEmail">
+                    {{ form_widget(form.email) }}
+                </div>
+            </div>
+        </div>
+        <div class="bscsFormFooter">
+            <div class="bscsFieldRow bscsFieldNotify">
+                {{ form_widget(form.notify) }}
+                {{ form_label(form.notify) }}
+            </div>
+            <div class="bscsFieldRow bscsFieldAction">
+                {{ form_widget(form.post) }}
+            </div>
+        </div>
+        <div class="bscsFieldDetect" style="display:none;">
+            <label>{{ __('Keep this field blank') }}</label>
+            <input type="text" name="detect" id="bscsDetect" />
+        </div>
         {{ form_widget(form.linked_entity) }}
-        {{ form_row(form.post) }}
     {{ form_end(form) }}
-    {#
-    <form action="/bscs-ajax" id="bscsForm" type="POST">
-        <textarea name="body"></textarea>
-        <input type="text" name="name"/>
-        <input type="text" name="email"/>
-        <input type="hidden" name="linked_entity" value="{{ slug }}" />
-        <input type="submit" value="envoyer"/>
-    </form>
-    #}
 </div>
-<script>
-    $( function() {
-        $( "#bscsForm" ).jqSimpleCommentsSystem({
-            propertyName: "#element"
-        });
-    } );
-</script>
