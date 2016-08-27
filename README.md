@@ -33,15 +33,21 @@ comments:
     fields:
         slug:
             type: slug
-        user_displayname:
+        author_display_name:
             type: text
-        user_email:
+            label: Display Name
+        author_email:
             type: text
+            label: Email
         body:
             type: html
             height: 300px
-        linked_url:
+        linked_entity:
             type: text
+            label: Parent entity
+        notify:
+            type: checkbox
+            label: Keep author notify of new comments
     recordsperpage: 100
     show_on_dashboard: true
     viewless: true
