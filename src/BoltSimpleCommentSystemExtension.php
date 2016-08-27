@@ -4,11 +4,14 @@ namespace Bolt\Extension\Leskis\BoltSimpleCommentSystem;
 
 use Bolt\Asset\File\JavaScript;
 use Bolt\Asset\File\Stylesheet;
+use Bolt\Events\StorageEvent;
+use Bolt\Events\StorageEvents;
 use Bolt\Extension\Leskis\BoltSimpleCommentSystem\Controller\CommentController;
 use Bolt\Extension\Leskis\BoltSimpleCommentSystem\Entity\Comment;
 use Bolt\Extension\Leskis\BoltSimpleCommentSystem\Form\CommentForm;
 use Bolt\Extension\SimpleExtension;
 use Silex\Application;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 /**
@@ -62,6 +65,103 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
     public function gravatarTwigFilter($input)
     {
         return md5(trim(strtolower($input ) ) );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function subscribe(EventDispatcherInterface $dispatcher)
+    {
+        // Pre-save hook
+        $dispatcher->addListener(StorageEvents::PRE_SAVE, [$this, 'hookPreSave']);
+    }
+
+     /**
+     * Pre-save hook
+     * @param \Bolt\Events\StorageEvent $event
+     */
+    public function hookPreSave(StorageEvent $event)
+    {
+        $app         = $this->getContainer();
+        $config      = $this->getConfig();
+        $contenttype = $event->getContentType();
+
+        if (   empty($contenttype)
+            || ! $config['features']['notify']['enabled']
+            || $contenttype != 'comments' ) {
+            return;
+        }
+
+        // Get the record : Bolt\Storage\Entity\Content
+        $record = $event->getContent();
+
+        // Test if newly published
+        $contentNewlyPublished = false;
+        if (   $event->isCreate()
+            && $record->getStatus() == 'published') {
+            $contentNewlyPublished = true;
+        }
+        else if ($record->getStatus() == 'published') {
+            // @todo : check if notification already sent
+            // use a temporary file or a db table ?
+            $repo = $app['storage']->getRepository($contenttype);
+            $oldRecord = $repo->find($record->getId() );
+            if (   !empty($oldRecord)
+                && $oldRecord->getStatus() != 'published') {
+                $contentNewlyPublished = true;
+            }
+        }
+
+        if ($contentNewlyPublished) {
+
+            // Launch the notification
+            $notify = new Notifications($app, $config, $record);
+
+            // Search subscribers
+            try {
+                $aSubscribers = $this->getSubscribers($record->getLinkedEntity() );
+
+                // Send email foreach subscriber
+                $notify->doNotification($aSubscribers);
+            } catch (\Exception $e) {
+                $app['logger.system']->error(sprintf("BoltSimpleCommentSystemExtension notifications can't be sent - %s", $e->getMessage() ), ['event' => 'extensions']);
+                return;
+            }
+        }
+
+        return;
+    }
+
+    /**
+     * Get Subscribers for notifications
+     * @return array email
+     */
+    private function getSubscribers($linked_entity)
+    {
+        $app          = $this->getContainer();
+        $config       = $this->getConfig();
+        $aSubscribers = false;
+
+        $repo      = $app['storage']->getRepository('comments');
+        $aComments = $repo->findBy([
+            'linked_entity' => $linked_entity,
+            'status'        => 'published',
+            'notify'        => true
+        ]);
+
+        if ($aComments) {
+            // @todo Do not sent email to owner
+            $aSubscribers = [];
+            foreach ($aComments as $aComment) {
+                $emailUniq = $this->gravatarTwigFilter($aComment['author_email']);
+                $aSubscribers[$emailUniq] = [
+                    'email' => $aComment['author_email'],
+                    'name'  => $aComment['author_display_name']
+                ];
+            }
+        }
+
+        return $aSubscribers;
     }
 
     /**

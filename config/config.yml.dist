@@ -1,7 +1,7 @@
 features:
     comments:
         order: asc              # 'desc' if you want the new comments at the top
-#        default_approve: true  # 'false' and submited comments get "draft" status by default
+#        default_approve: true  # 'false' if submited comments should get "draft" status by default
     gravatar:
         enabled: true
 #        url: https://www.gravatar.com/avatar/XXX?s=40&d=mm

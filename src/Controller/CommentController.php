@@ -79,7 +79,7 @@ class CommentController implements ControllerProviderInterface
             $values = [
                 'datecreated'         => date('Y-m-d H:i:s'),
                 'datepublish'         => date('Y-m-d H:i:s'),
-                'status'              => 'published',
+                'status'              => 'draft',
                 'author_email'        => $comment->getAuthorEmail(),
                 'author_display_name' => $comment->getAuthorDisplayName(),
                 'body'                => $comment->getBody(),
@@ -87,8 +87,8 @@ class CommentController implements ControllerProviderInterface
                 'notify'              => $comment->getNotify()
             ];
 
-            if (! $config['features']['comments']['default_approve']) {
-                $values['status'] = 'draft';
+            if ($this->config['features']['comments']['default_approve'] ) {
+                $values['status'] = 'published';
             }
 
             $record = $app['storage']->getEmptyContent('comments');

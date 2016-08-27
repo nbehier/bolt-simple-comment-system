@@ -22,6 +22,7 @@ Simple comment system - Bolt Extension
 - Comment Entity have to be create manually on contentypes.yml
 - Translates only load after Bolt 3.1.X
 - Notifications are not sent
+- Add Notification to website owner for approval
 - Add [mention.js](https://github.com/jakiestfu/Mention.js/)
 - Enhance Spam detection
 - Manage [IP Blacklist](https://github.com/morrelinko/spam-detector) ?
@@ -63,7 +64,6 @@ comments:
     show_on_dashboard: true
     viewless: true
     sort: -datepublish
-    default_status: publish
     icon_many: "fa:comments"
     icon_one: "fa:comment"
  ```
@@ -83,7 +83,7 @@ comments:
 features:
     comments:
         order: asc              # 'desc' if you want the new comments at the top
-#        default_approve: true  # 'false' and submited comments get "draft" status by default
+#        default_approve: true  # 'false' if submited comments should get "draft" status by default
     gravatar:
         enabled: true
 #        url: https://www.gravatar.com/avatar/XXX?s=40&d=mm
