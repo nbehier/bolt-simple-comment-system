@@ -11,6 +11,9 @@
     "require-dev": {
         "phpunit/phpunit": "^4.7"
     },
+    "suggest": {
+        "leskis/bolt-sendemail-fornewcontent": "An extension to send email to administrator when new comment is published"
+    },
     "license": "MIT",
     "authors": [
         {

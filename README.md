@@ -1,16 +1,19 @@
-!!! Work in progress
+### !!! Work in progress
 
 Simple comment system - Bolt Extension
 ======================================
 
 [Bolt](https://bolt.cm/) extension to add a simple local comment system
 
-### Known limitations
--
+### Known limitations and futures features
+- Comment Entity have to be create manually on contentypes.yml
+- Notifications are not sent
+- Add [emoji](https://github.com/Ranks/emojione)
+- Add [mention.js](https://github.com/jakiestfu/Mention.js/)
 
 ### Requirements
 - Bolt 3.x installation
-- [optional]
+- [optional] [Send email for new content](https://github.com/nbehier/bolt-sendemail-fornewcontent) to to send email to administrator when new comment is published
 
 ### Installation
 1. Login to your Bolt installation
