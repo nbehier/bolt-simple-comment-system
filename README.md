@@ -11,6 +11,7 @@ Simple comment system - Bolt Extension
 - Config personal templates
 - Comment with or without approval
 - Use [gravatar](https://fr.gravatar.com/) if possible
+- Use [CSS Emoticons](https://os.alfajango.com/css-emoticons/)
 - Use [Honeypot technique](http://jennamolby.com/how-to-prevent-form-spam-by-using-the-honeypot-technique/) for spam
 
 ### Requirements
@@ -21,7 +22,6 @@ Simple comment system - Bolt Extension
 - Comment Entity have to be create manually on contentypes.yml
 - Translates only load after Bolt 3.1.X
 - Notifications are not sent
-- Add [emoji](https://github.com/Ranks/emojione)
 - Add [mention.js](https://github.com/jakiestfu/Mention.js/)
 - Enhance Spam detection
 - Manage [IP Blacklist](https://github.com/morrelinko/spam-detector) ?
@@ -87,6 +87,9 @@ features:
     gravatar:
         enabled: true
 #        url: https://www.gravatar.com/avatar/XXX?s=40&d=mm
+    emoticons:
+        enabled: true
+        animate: false
     debug:
         enabled: true
         address: noreply@example.com # email used to send debug notifications

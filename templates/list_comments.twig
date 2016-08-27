@@ -2,7 +2,7 @@
 {% set config_order = ( extension_config.get('features').comments.order == 'desc' ? '-' ) ~ 'datecreated' %}
 {% setcontent comments = 'comments' where { linked_entity: slug } orderby config_order %}
 {% if comments %}
-<div class="bscsComments">
+<div class="bscsComments {{ extension_config.get('features').emoticons.enabled ? 'jsDisplayEmoticons' }}"{% if extension_config.get('features').emoticons.enabled %} data-emoticons-animate="{{ extension_config.get('features').emoticons.animate ? 'true' : 'false' }}"{% endif %}>
     <h3>{{ __('Comments') }}</h3>
     <ul>
     {% for comment in comments %}

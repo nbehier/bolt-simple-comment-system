@@ -5,6 +5,9 @@ features:
     gravatar:
         enabled: true
 #        url: https://www.gravatar.com/avatar/XXX?s=40&d=mm
+    emoticons:
+        enabled: true
+        animate: false
     debug:
         enabled: true
         address: noreply@example.com # email used to send debug notifications

@@ -114,6 +114,20 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
             $assets[] = $gravatar_js;
         }
 
+        if (   $config['assets']['frontend']['load_js']
+            && $config['features']['emoticons']['enabled'] ) {
+            $emoticons_js = new JavaScript();
+            $emoticons_js->setFileName('jQuery-CSSEmoticons/javascripts/jquery.cssemoticons.min.js')
+                ->setLate(true)
+                ->setPriority(97);
+
+            $emoticons_css = new Stylesheet();
+            $emoticons_css->setFileName('jQuery-CSSEmoticons/stylesheets/jquery.cssemoticons.css');
+
+            $assets[] = $emoticons_css;
+            $assets[] = $emoticons_js;
+        }
+
         return $assets;
     }
 
@@ -167,8 +181,12 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
                     'default_approve' => true
                 ],
                 'gravatar' => [
-                    'enabled' => false,
+                    'enabled' => true,
                     'url'     => 'https://www.gravatar.com/avatar/XXX?s=40&d=mm'
+                ],
+                'emoticons' => [
+                    'enabled' => true,
+                    'animate' => false
                 ],
                 'debug' => [
                     'enabled' => true,

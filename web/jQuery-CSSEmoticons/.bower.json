@@ -1,0 +1,15 @@
+{
+  "name": "jQuery-CSSEmoticons",
+  "homepage": "https://github.com/JangoSteve/jQuery-CSSEmoticons",
+  "version": "0.2.9",
+  "_release": "0.2.9",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.2.9",
+    "commit": "64f1ac821a32174d1a954d0d7ae89f9170b203da"
+  },
+  "_source": "git@github.com:JangoSteve/jQuery-CSSEmoticons.git",
+  "_target": "^0.2.9",
+  "_originalSource": "git@github.com:JangoSteve/jQuery-CSSEmoticons.git",
+  "_direct": true
+}

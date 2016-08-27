@@ -111,4 +111,12 @@
 
 $( function() {
     $( "#bscsForm" ).jqSimpleCommentsSystem({});
+
+    var $emoticonsContainer = $('.jsDisplayEmoticons');
+    if ($emoticonsContainer.length > 0) {
+        var config = $emoticonsContainer.data('emoticons-animate');
+        $emoticonsContainer.find('.bscsCommentBody').emoticonize({
+            'animate': config
+        });
+    }
 } );
