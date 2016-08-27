@@ -16,10 +16,10 @@ features:
 #            replyto_email:  #
 
 # templates:
-#     form: extensions/bolt-simple-comment-system/form_comment.twig
-#     list: extensions/bolt-simple-comment-system/list_comments.twig
-#     emailbody: extensions/bolt-simple-comment-system/email_body.twig
-#     emailsubject: extensions/bolt-simple-comment-system/email_subject.twig
+#     form: extensions/leskis/bolt-simple-comment-system/templates/form_comment.twig
+#     list: extensions/leskis/bolt-simple-comment-system/templates/list_comments.twig
+#     emailbody: extensions/leskis/bolt-simple-comment-system/templates/email_body.twig
+#     emailsubject: extensions/leskis/bolt-simple-comment-system/templates/email_subject.twig
 
 # assets:
 #     frontend:
