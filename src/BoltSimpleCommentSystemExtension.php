@@ -162,8 +162,9 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
     {
         return [
             'features' => [
-                'list' => [
-                    'order' => 'asc'
+                'comments' => [
+                    'order'           => 'asc',
+                    'default_approve' => true
                 ],
                 'gravatar' => [
                     'enabled' => false,

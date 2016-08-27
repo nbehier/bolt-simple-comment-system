@@ -87,6 +87,10 @@ class CommentController implements ControllerProviderInterface
                 'notify'              => $comment->getNotify()
             ];
 
+            if (! $config['features']['comments']['default_approve']) {
+                $values['status'] = 'draft';
+            }
+
             $record = $app['storage']->getEmptyContent('comments');
             $record->setValues($values);
             $id = $app['storage']->saveContent($record);

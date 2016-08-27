@@ -3,7 +3,8 @@
     "description": "Bolt extension to add a simple local comment system",
     "type": "bolt-extension",
     "keywords": [
-        "comments"
+        "comments",
+        "gravatar"
     ],
     "require": {
         "bolt/bolt": "^3.0"

@@ -1,5 +1,5 @@
 {% set extension_config = app['bolt-simple-comment.config'] %}
-{% set config_order = ( extension_config.get('features').list.order == 'desc' ? '-' ) ~ 'datecreated' %}
+{% set config_order = ( extension_config.get('features').comments.order == 'desc' ? '-' ) ~ 'datecreated' %}
 {% setcontent comments = 'comments' where { linked_entity: slug } orderby config_order %}
 {% if comments %}
 <div class="bscsComments">

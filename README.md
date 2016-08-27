@@ -8,6 +8,8 @@ Simple comment system - Bolt Extension
 ### Features
 - Comment Form
 - Comments list
+- Config personal templates
+- Comment with or without approval
 - Use [gravatar](https://fr.gravatar.com/) if possible
 - Use [Honeypot technique](http://jennamolby.com/how-to-prevent-form-spam-by-using-the-honeypot-technique/) for spam
 
@@ -17,6 +19,7 @@ Simple comment system - Bolt Extension
 
 ### Known limitations and futures features
 - Comment Entity have to be create manually on contentypes.yml
+- Translates only load after Bolt 3.1.X
 - Notifications are not sent
 - Add [emoji](https://github.com/Ranks/emojione)
 - Add [mention.js](https://github.com/jakiestfu/Mention.js/)
@@ -78,8 +81,9 @@ comments:
 
 ```(yml)
 features:
-    list:
-        order: asc # 'desc' if you want the new comments at the top
+    comments:
+        order: asc              # 'desc' if you want the new comments at the top
+#        default_approve: true  # 'false' and submited comments get "draft" status by default
     gravatar:
         enabled: true
 #        url: https://www.gravatar.com/avatar/XXX?s=40&d=mm
@@ -94,7 +98,6 @@ features:
 #            replyto_name:   #
 #            replyto_email:  #
 
-# templates:
 # templates:
 #     form: extensions/leskis/bolt-simple-comment-system/templates/form_comment.twig
 #     list: extensions/leskis/bolt-simple-comment-system/templates/list_comments.twig
