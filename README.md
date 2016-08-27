@@ -5,15 +5,23 @@ Simple comment system - Bolt Extension
 
 [Bolt](https://bolt.cm/) extension to add a simple local comment system
 
+### Features
+- Comment Form
+- Comments list
+- Use [gravatar](https://fr.gravatar.com/) if possible
+- Use [Honeypot technique](http://jennamolby.com/how-to-prevent-form-spam-by-using-the-honeypot-technique/) for spam
+
+### Requirements
+- Bolt 3.x installation
+- [optional] [Send email for new content](https://github.com/nbehier/bolt-sendemail-fornewcontent) to to send email to administrator when new comment is published
+
 ### Known limitations and futures features
 - Comment Entity have to be create manually on contentypes.yml
 - Notifications are not sent
 - Add [emoji](https://github.com/Ranks/emojione)
 - Add [mention.js](https://github.com/jakiestfu/Mention.js/)
-
-### Requirements
-- Bolt 3.x installation
-- [optional] [Send email for new content](https://github.com/nbehier/bolt-sendemail-fornewcontent) to to send email to administrator when new comment is published
+- Enhance Spam detection
+- Manage [IP Blacklist](https://github.com/morrelinko/spam-detector) ?
 
 ### Installation
 1. Login to your Bolt installation
