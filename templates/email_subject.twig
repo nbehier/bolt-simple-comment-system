@@ -1,0 +1,7 @@
+{#
+ # Passed in variables:
+ #   record   — Record data
+ #}
+{% spaceless %}
+[{{ app.config.get('general/sitename') }}] A new {{ record.contenttype.singular_name }} has been published
+{% endspaceless %}

@@ -1,0 +1,27 @@
+features:
+    list:
+        order: asc # 'desc' if you want the new comments at the top
+    gravatar:
+        enabled: true
+#        url: https://www.gravatar.com/avatar/XXX?s=40&d=mm
+    debug:
+        enabled: true
+        address: noreply@example.com # email used to send debug notifications
+    notify:
+        enabled: true
+        email:
+            from_name:  Your website
+            from_email: your-email@your-website.com
+#            replyto_name:   #
+#            replyto_email:  #
+
+# templates:
+#     form: extensions/bolt-simple-comment-system/form_comment.twig
+#     list: extensions/bolt-simple-comment-system/list_comments.twig
+#     emailbody: extensions/bolt-simple-comment-system/email_body.twig
+#     emailsubject: extensions/bolt-simple-comment-system/email_subject.twig
+
+# assets:
+#     frontend:
+#         load_js: true
+#         load_css: true

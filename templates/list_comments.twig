@@ -1,1 +1,26 @@
 {% set extension_config = app['bolt-simple-comment.config'] %}
+{% set config_order = ( extension_config.get('features').list.order == 'desc' ? '-' ) ~ 'datecreated' %}
+{% setcontent comments = 'comments' where { linked_entity: slug } orderby config_order %}
+{% if comments %}
+<div class="bscsComments">
+    <h3>{{ __('Comments') }}</h3>
+    <ul>
+    {% for comment in comments %}
+        <li class="bscsComment" id="{{ comment.slug }}">
+            {% if extension_config.get('features').gravatar.enabled %}
+            <div class="bscsCommentAvatar" title="{{ __('Specify your avatar with gravatar.com') }}">
+                <img src="https://www.gravatar.com/avatar/{{ comment.author_email|bscs_gravatar }}?s=40&d=mm" alt="avatar"/>
+            </div>
+            <div class="bscsCommentContainer">
+            {% else %}
+            <div class="bscsCommentContainer bscsCommentNoAvatar">
+            {% endif %}
+                <div class="bscsCommentAuthor">{{ comment.author_display_name }}</div>
+                <div class="bscsCommentTime" title="{{ comment.datecreated|localedatetime("%c") }}">{{ comment.datecreated|localedatetime("%c") }}</div>
+                <div class="bscsCommentBody">{{ comment.body }}</div>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}

@@ -4,8 +4,9 @@ namespace Bolt\Extension\Leskis\BoltSimpleCommentSystem;
 
 use Bolt\Asset\File\JavaScript;
 use Bolt\Asset\File\Stylesheet;
-use Bolt\Extension\Leskis\BoltSimpleCommentSystem\Controller\AjaxController;
-use Bolt\Extension\Leskis\BoltSimpleCommentSystem\Form\AddComment;
+use Bolt\Extension\Leskis\BoltSimpleCommentSystem\Controller\CommentController;
+use Bolt\Extension\Leskis\BoltSimpleCommentSystem\Entity\Comment;
+use Bolt\Extension\Leskis\BoltSimpleCommentSystem\Form\CommentForm;
 use Bolt\Extension\SimpleExtension;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -23,14 +24,14 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
      *
      * @return string
      */
-    public function listCommentsFunction()
+    public function listCommentsFunction($context)
     {
-        $context = [
-            'something' => mt_rand(),
-        ];
-        $html = $this->renderTemplate('list_comments.twig', $context);
+        $config = $this->getConfig();
+        $html   = $this->renderTemplate($config['templates']['list'], $context);
+
         return new \Twig_Markup($html, 'UTF-8');
     }
+
     /**
      * The callback function when {{ bscs_add_comment() }} is used in a template.
      *
@@ -38,26 +39,29 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
      */
     public function addCommentFunction($context)
     {
-        $app = $this->getContainer();
+        $app     = $this->getContainer();
+        $config  = $this->getConfig();
+        $comment = new Comment();
+        $comment->setLinkedEntity($context['slug']);
 
-        $data = [
-            'csrf_protection' => true,
-            'linked_entity'   => $context['slug'],
-        ];
-//https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2/creer-des-formulaires-avec-symfony2
-        $form = $app['form.factory']->createBuilder(new AddComment(), $data)
+        // @see https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2/creer-des-formulaires-avec-symfony2
+        $form = $app['form.factory']->createBuilder(new CommentForm(), $comment)
+                                    ->setAction($app['url_generator']->generate('bscs-comment-save') )//'/bscs-comment/save')
+                                    ->setMethod('POST')
                                     ->getForm();
-
-        // Handle the form request data
-        //$form->handleRequest($request);
 
         // Render the Twig
         $html = $app['render']->render(
-            'form_comment.twig', [
+            $config['templates']['form'], [
                 'form' => $form->createView()
             ]
         );
         return new \Twig_Markup($html, 'UTF-8');
+    }
+
+    public function gravatarTwigFilter($input)
+    {
+        return md5(trim(strtolower($input ) ) );
     }
 
     /**
@@ -70,10 +74,9 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
      */
     protected function registerFrontendControllers()
     {
-        $app = $this->getContainer();
         $config = $this->getConfig();
         return [
-            '/bscs-ajax' => new AjaxController($config),
+            '/bscs-comment' => new CommentController($config),
         ];
     }
 
@@ -82,12 +85,36 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
      */
     protected function registerAssets()
     {
-        // https://docs.bolt.cm/3.0/extensions/building/web-assets#snippets
-        return [
-            (new JavaScript('blueimp-md5/js/md5.min.js'))->setLate(true)->setPriority(98),
-            (new JavaScript('simplecommentsystem.js'))->setLate(true)->setPriority(99),
-            (new Stylesheet('simplecommentsystem.css'))
-        ];
+        $assets = [];
+        $config = $this->getConfig();
+
+        if ( $config['assets']['frontend']['load_css'] ) {
+            $main_css = new Stylesheet();
+            $main_css->setFileName('simplecommentsystem.css');
+
+            $assets[] = $main_css;
+        }
+
+        if ( $config['assets']['frontend']['load_js'] ) {
+            $main_js = new JavaScript();
+            $main_js->setFileName('simplecommentsystem.js')
+                ->setLate(true)
+                ->setPriority(99);
+
+            $assets[] = $main_js;
+        }
+
+        if (   $config['assets']['frontend']['load_js']
+            && $config['features']['gravatar']['enabled'] ) {
+            $gravatar_js = new JavaScript();
+            $gravatar_js->setFileName('blueimp-md5/js/md5.min.js')
+                ->setLate(true)
+                ->setPriority(98);
+
+            $assets[] = $gravatar_js;
+        }
+
+        return $assets;
     }
 
     protected function registerServices(Application $app)
@@ -106,14 +133,70 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
     {
         return ['templates'];
     }
+
     /**
      * {@inheritdoc}
      */
     protected function registerTwigFunctions()
     {
         return [
-            'bscs_comments' => 'listCommentsFunction',
+            'bscs_comments'    => 'listCommentsFunction',
             'bscs_add_comment' => 'addCommentFunction'
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function registerTwigFilters()
+    {
+        return [
+            'bscs_gravatar' => 'gravatarTwigFilter'
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultConfig()
+    {
+        return [
+            'features' => [
+                'list' => [
+                    'order' => 'asc'
+                ],
+                'gravatar' => [
+                    'enabled' => false,
+                    'url'     => 'https://www.gravatar.com/avatar/XXX?s=40&d=mm'
+                ],
+                'debug' => [
+                    'enabled' => true,
+                    'address' => 'noreply@example.com'
+                ],
+                'notify' => [
+                    'enabled' => true,
+                    'email'   => [
+                        'from_name'     => 'Your website',
+                        'from_email'    => 'your-email@your-website.com',
+                        'replyto_name'  => '',
+                        'replyto_email' => ''
+                    ]
+                ]
+            ],
+
+            'templates' => [
+                'form'         => 'form_comment.twig',
+                'list'         => 'list_comments.twig',
+                'emailbody'    => 'email_body.twig',
+                'emailsubject' => 'email_subject.twig'
+            ],
+
+            'assets' => [
+                'frontend' => [
+                    'load_js'  => true,
+                    'load_css' => true
+                ]
+            ]
         ];
     }
 

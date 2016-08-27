@@ -1,3 +1,40 @@
+/* Comments List */
+.bscsComments ul {
+    margin: 0 0 1em 0;
+    padding: 0;
+}
+.bscsComment {
+    border-bottom: 1px solid #eee;
+    list-style: none;
+    padding: 15px 0;
+}
+.bscsCommentAvatar {
+    float: left;
+}
+.bscsCommentAvatar img {
+    max-width: 100%;
+    width: 40px;
+}
+.bscsCommentContainer {
+    margin-left: 55px;
+}
+    .bscsCommentContainer.bscsCommentNoAvatar {
+        margin-left: 0;
+    }
+.bscsCommentAuthor {
+    display: inline-block;
+    font-weight: bold;
+}
+.bscsCommentTime {
+    color: #777;
+    display: inline-block;
+    font-size: 0.8em;
+}
+.bscsCommentBody {
+    display: block;
+}
+
+/* Comment Form */
 #bscsFormContainer {}
 #bscsForm {
     background-color: #ccc;
@@ -16,6 +53,8 @@
     padding: 4px;
 }
     .bscsFieldRow {
+        display: -ms-flex;
+        display: -webkit-flex;
         display: flex;
         flex: row wrap;
         justify-content: flex-end;

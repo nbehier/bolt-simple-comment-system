@@ -1,4 +1,5 @@
 {% set extension_config = app['bolt-simple-comment.config'] %}
+
 <div id="bscsFormContainer">
     <h4>{{ __('Add a comment') }}</h4>
     {{ form_errors(form) }}
@@ -8,12 +9,14 @@
                 {{ form_widget(form.body) }}
             </div>
             <div class="bscsFieldRow">
-                <div class="bscsFieldAvatar"></div>
+                {% if extension_config.get('features').gravatar.enabled %}
+                <div class="bscsFieldAvatar" title="{{ __('Specify your avatar with gravatar.com') }}"></div>
+                {% endif %}
                 <div class="bscsFieldName">
-                    {{ form_widget(form.name) }}
+                    {{ form_widget(form.author_display_name) }}
                 </div>
                 <div class="bscsFieldEmail">
-                    {{ form_widget(form.email) }}
+                    {{ form_widget(form.author_email) }}
                 </div>
             </div>
         </div>
@@ -30,6 +33,6 @@
             <label>{{ __('Keep this field blank') }}</label>
             <input type="text" name="detect" id="bscsDetect" />
         </div>
-        {{ form_widget(form.linked_entity) }}
+        {{ form_rest(form) }}
     {{ form_end(form) }}
 </div>

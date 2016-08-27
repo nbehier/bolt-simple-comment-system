@@ -15,10 +15,11 @@
             defaults   = {
                 honeypotSelector:        '#bscsDetect',
                 buttonSelector:          '#addcomment_post',
-                emailAuthorSelector:     '#addcomment_email',
-                nameAuthorSelector:      '#addcomment_name',
+                emailAuthorSelector:     '#addcomment_author_email',
+                nameAuthorSelector:      '#addcomment_author_display_name',
                 bodySelector:            '#addcomment_body',
-                avatarContainerSelector: '.bscsFieldAvatar'
+                avatarContainerSelector: '.bscsFieldAvatar',
+                gravatarUrl:             'https://www.gravatar.com/avatar/XXX?s=40&d=mm'
             };
 
         // The actual plugin constructor
@@ -42,7 +43,7 @@
             addFormEvents: function() {
                 var _this = this;
 
-                $(this.form).on('submit', function(event) {
+                $(this.settings.buttonSelector).on('click', function(event) {
                     event.preventDefault();
 
                     if ( _this.hasDetectSpam() ) {
@@ -73,19 +74,25 @@
                 console.log("Not valid author !");
             },
             displayAvatar: function() {
-                var gravatar = "https://www.gravatar.com/avatar/XXX?s=40&d=mm",
+                var gravatar = this.settings.gravatarUrl,
+                     $avatar = $(this.form).find(this.settings.avatarContainerSelector),
                        email = $(this.settings.emailAuthorSelector).val();
+
+                if ($avatar.length == 0) {
+                    return;
+                }
 
                 if (email != '') {
                     email    = md5(email.trim().toLowerCase() );
                     gravatar = gravatar.replace('XXX', email);
                 }
 
-                $(this.settings.avatarContainerSelector).html('<img src="' + gravatar + '" alt="avatar"/>');
+                $avatar.html('<img src="' + gravatar + '" alt="avatar"/>');
             },
             submit: function() {
                 // @todo submit
                 console.log('submit');
+                $(this.form).submit();
             }
         } );
 
