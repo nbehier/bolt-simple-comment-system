@@ -26,6 +26,7 @@ Simple comment system - Bolt Extension
 - Add [mention.js](https://github.com/jakiestfu/Mention.js/)
 - Enhance Spam detection
 - Manage [IP Blacklist](https://github.com/morrelinko/spam-detector) ?
+- Snippets to display number of comments
 
 ### Installation
 1. Login to your Bolt installation
@@ -112,6 +113,21 @@ features:
 #         load_js: true
 #         load_css: true
 ```
+
+### Usage
+Where you want to display the comment list, add on your record template:
+
+```(twig)
+{# Define a uniq id for this list of comments #}
+{% set guid = record.contenttype.singular_slug ~ '/' ~ record.id %}
+
+{# display the list of comments for this uniq id #}
+{{ bscs_comments({ 'guid': guid }) }}
+
+{# display comment form for this uniq id #}
+{{ bscs_add_comment({ 'guid': guid }) }}
+```
+
 
 ### License
 This Bolt extension is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)

@@ -45,7 +45,7 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
         $app     = $this->getContainer();
         $config  = $this->getConfig();
         $comment = new Comment();
-        $comment->setLinkedEntity($context['slug']);
+        $comment->setLinkedEntity($context['guid']);
 
         // @see https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2/creer-des-formulaires-avec-symfony2
         $form = $app['form.factory']->createBuilder(new CommentForm(), $comment)

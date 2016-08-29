@@ -1,12 +1,17 @@
+{#
+ # Passed in variables:
+ #   guid — Uniq identifier form snippet call
+ #}
 {% set extension_config = app['bolt-simple-comment.config'] %}
 {% set config_order = ( extension_config.get('features').comments.order == 'desc' ? '-' ) ~ 'datecreated' %}
-{% setcontent comments = 'comments' where { linked_entity: slug } orderby config_order %}
+
+{% setcontent comments = 'comments' where { linked_entity: guid } orderby config_order %}
 {% if comments %}
 <div class="bscsComments {{ extension_config.get('features').emoticons.enabled ? 'jsDisplayEmoticons' }}"{% if extension_config.get('features').emoticons.enabled %} data-emoticons-animate="{{ extension_config.get('features').emoticons.animate ? 'true' : 'false' }}"{% endif %}>
     <h3>{{ __('Comments') }}</h3>
     <ul>
     {% for comment in comments %}
-        <li class="bscsComment" id="{{ comment.slug }}">
+        <li class="bscsComment" id="{{ guid }}">
             {% if extension_config.get('features').gravatar.enabled %}
             <div class="bscsCommentAvatar" title="{{ __('Specify your avatar with gravatar.com') }}">
                 <img src="https://www.gravatar.com/avatar/{{ comment.author_email|bscs_gravatar }}?s=40&d=mm" alt="avatar"/>
