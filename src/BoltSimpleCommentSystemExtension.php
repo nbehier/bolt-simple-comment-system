@@ -23,7 +23,7 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
 {
 
     /**
-     * The callback function when {{ bscs_comments() }} is used in a template.
+     * The callback function when {{ bscs_list_comments() }} is used in a template.
      *
      * @return string
      */
@@ -254,8 +254,8 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
     protected function registerTwigFunctions()
     {
         return [
-            'bscs_comments'    => 'listCommentsFunction',
-            'bscs_add_comment' => 'addCommentFunction'
+            'bscs_list_comments'  => 'listCommentsFunction',
+            'bscs_add_comment'    => 'addCommentFunction'
         ];
     }
 

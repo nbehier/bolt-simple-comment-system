@@ -122,7 +122,7 @@ Where you want to display the comment list, add on your record template:
 {% set guid = record.contenttype.singular_slug ~ '/' ~ record.id %}
 
 {# display the list of comments for this uniq id #}
-{{ bscs_comments({ 'guid': guid }) }}
+{{ bscs_list_comments({ 'guid': guid }) }}
 
 {# display comment form for this uniq id #}
 {{ bscs_add_comment({ 'guid': guid }) }}
