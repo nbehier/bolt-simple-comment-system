@@ -6,8 +6,9 @@ Simple comment system - Bolt Extension
 [Bolt](https://bolt.cm/) extension to add a simple local comment system
 
 ### Features
-- Comment Form
-- Comments list
+- Comment form twig function
+- Comments list twig function
+- Comments number twig function
 - Config personal templates
 - Comment with or without approval
 - Use [gravatar](https://fr.gravatar.com/) if possible
@@ -26,7 +27,6 @@ Simple comment system - Bolt Extension
 - Add [mention.js](https://github.com/jakiestfu/Mention.js/)
 - Enhance Spam detection : add reCaptcha or list personal questions/responses or Akismet
 - Manage [IP Blacklist](https://github.com/morrelinko/spam-detector) ?
-- Snippets to display number of comments
 
 ### Installation
 1. Login to your Bolt installation
@@ -126,6 +126,14 @@ Where you want to display the comment list, add on your record template:
 
 {# display comment form for this uniq id #}
 {{ bscs_add_comment({ 'guid': guid }) }}
+
+{# display number of comments for this uniq id #}
+{% set numberOfComments = bscs_count_comments({ 'guid': guid }) %}
+{% if numberOfComments == 0 %}
+No comment.
+{% else %}
+There are {{ numberOfComments }} comment{{ numberOfComments > 1 ? 's' }}{% endif %}
+
 ```
 
 

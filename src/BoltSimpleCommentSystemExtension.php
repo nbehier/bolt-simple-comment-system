@@ -36,6 +36,24 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
     }
 
     /**
+     * The callback function when {{ bscs_count_comments() }} is used in a template.
+     *
+     * @return string
+     */
+    public function countCommentsFunction($context)
+    {
+        $app       = $this->getContainer();
+        $guid      = $context['guid'];
+        $repo      = $app['storage']->getRepository('comments');
+        $aComments = $repo->findBy([
+            'linked_entity' => $guid,
+            'status'        => 'published'
+        ],[],9999);
+
+        return count($aComments);
+    }
+
+    /**
      * The callback function when {{ bscs_add_comment() }} is used in a template.
      *
      * @return string
@@ -255,7 +273,8 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
     {
         return [
             'bscs_list_comments'  => 'listCommentsFunction',
-            'bscs_add_comment'    => 'addCommentFunction'
+            'bscs_add_comment'    => 'addCommentFunction',
+            'bscs_count_comments' => 'countCommentsFunction'
         ];
     }
 
