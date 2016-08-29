@@ -116,9 +116,9 @@ class Notifications
         if ($this->debug) {
             $this->recipients = [
                 new Content([
-                    'title'  => 'Test Showcase',
-                    'slug'   => 'test',
-                    $this->emailField => $this->debug_address
+                    'title'        => 'Test Showcase',
+                    'slug'         => 'test',
+                    'author_email' => $this->debug_address
                 ])
             ];
         } else {
@@ -182,13 +182,13 @@ class Notifications
     private function doSend(\Swift_Message $message, Content $recipient)
     {
         // Set the recipient for *this* message
-        $emailTo = $recipient->get($this->emailField);
+        $emailTo = $recipient->getAuthorEmail();
         $message->setTo($emailTo);
 
         if ($this->app['mailer']->send($message)) {
-            $this->app['logger.system']->info("Sent BoltSendEmailForNewContentExtension notification to {$emailTo}", ['event' => 'extensions']);
+            $this->app['logger.system']->info("Sent BoltSimpleCommentSystem notification to {$emailTo}", ['event' => 'extensions']);
         } else {
-            $this->app['logger.system']->error("Failed BoltSendEmailForNewContentExtension notification to {$emailTo}", ['event' => 'extensions']);
+            $this->app['logger.system']->error("Failed BoltSimpleCommentSystem notification to {$emailTo}", ['event' => 'extensions']);
         }
     }
 
@@ -201,61 +201,17 @@ class Notifications
         $this->contentType = $this->record->getContenttype();
 
         // Set Debug
-        $this->debug         = $this->config['debug']['enabled'];
-        $this->debug_address = $this->config['debug']['address'];
-        if (   $this->debug
-            && ! empty($this->contentType)
-            && array_key_exists('debug', $this->config['notifications'][$this->contentType]) ) {
-            if ( $this->config['notifications'][$this->contentType]['debug'] == false ) {
-                $this->debug = false;
-            }
-        }
-
-        // Set Email Field From Subscribers
-        $this->emailField = $this->config['subscribers']['emailfield'];
-        if (   ! empty($this->contentType)
-            && array_key_exists('subscribers', $this->config['notifications'][$this->contentType]) ) {
-            if ( isset($this->config['notifications'][$this->contentType]['subscribers']['emailfield']) ) {
-                $this->emailField = $this->config['notifications'][$this->contentType]['subscribers']['emailfield'];
-            }
-        }
+        $this->debug         = $this->config['features']['debug']['enabled'];
+        $this->debug_address = $this->config['features']['debug']['address'];
 
         // Get Templates
         $this->subjectTpl = $this->config['templates']['emailsubject'];
         $this->bodyTpl    = $this->config['templates']['emailbody'];
-        if (   ! empty($this->contentType)
-            && array_key_exists('templates', $this->config['notifications'][$this->contentType]) ) {
-            if ( isset($this->config['notifications'][$this->contentType]['templates']['emailsubject']) ) {
-                $this->subjectTpl = $this->config['notifications'][$this->contentType]['templates']['emailsubject'];
-            }
-            if ( isset($this->config['notifications'][$this->contentType]['templates']['bodysubject']) ) {
-                $this->bodyTpl = $this->config['notifications'][$this->contentType]['templates']['bodysubject'];
-            }
-        }
 
         // Get Sender
-        $this->from_name     = $this->config['email']['from_name'];
-        $this->from_email    = $this->config['email']['from_email'];
-        $this->replyto_name  = $this->config['email']['replyto_name'];
-        $this->replyto_email = $this->config['email']['replyto_email'];
-        if (   ! empty($this->contentType)
-            && array_key_exists('email', $this->config['notifications'][$this->contentType]) ) {
-            if ( isset($this->config['notifications'][$this->contentType]['email']['from_name'])
-                 && ! empty($this->config['notifications'][$this->contentType]['email']['from_name']) ) {
-                $this->from_name = $this->config['notifications'][$this->contentType]['email']['from_name'];
-            }
-            if ( isset($this->config['notifications'][$this->contentType]['email']['from_email'])
-                 && ! empty($this->config['notifications'][$this->contentType]['email']['from_email']) ) {
-                $this->from_email = $this->config['notifications'][$this->contentType]['email']['from_email'];
-            }
-            if ( isset($this->config['notifications'][$this->contentType]['email']['replyto_name'])
-                 && ! empty($this->config['notifications'][$this->contentType]['email']['replyto_name']) ) {
-                $this->replyto_name = $this->config['notifications'][$this->contentType]['email']['replyto_name'];
-            }
-            if ( isset($this->config['notifications'][$this->contentType]['email']['replyto_email'])
-                 && ! empty($this->config['notifications'][$this->contentType]['email']['replyto_email']) ) {
-                $this->replyto_email = $this->config['notifications'][$this->contentType]['email']['replyto_email'];
-            }
-        }
+        $this->from_name     = $this->config['features']['notify']['email']['from_name'];
+        $this->from_email    = $this->config['features']['notify']['email']['from_email'];
+        $this->replyto_name  = $this->config['features']['notify']['email']['replyto_name'];
+        $this->replyto_email = $this->config['features']['notify']['email']['replyto_email'];
     }
 }

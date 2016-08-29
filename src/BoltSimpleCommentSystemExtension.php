@@ -46,8 +46,8 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
         $guid      = $context['guid'];
         $repo      = $app['storage']->getRepository('comments');
         $aComments = $repo->findBy([
-            'linked_entity' => $guid,
-            'status'        => 'published'
+            'guid'   => $guid,
+            'status' => 'published'
         ],[],9999);
 
         return count($aComments);
@@ -63,7 +63,7 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
         $app     = $this->getContainer();
         $config  = $this->getConfig();
         $comment = new Comment();
-        $comment->setLinkedEntity($context['guid']);
+        $comment->setGuid($context['guid']);
 
         // @see https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2/creer-des-formulaires-avec-symfony2
         $form = $app['form.factory']->createBuilder(new CommentForm(), $comment)
@@ -137,7 +137,7 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
 
             // Search subscribers
             try {
-                $aSubscribers = $this->getSubscribers($record->getLinkedEntity() );
+                $aSubscribers = $this->getSubscribers($record->getGuid() );
 
                 // Send email foreach subscriber
                 $notify->doNotification($aSubscribers);
@@ -154,7 +154,7 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
      * Get Subscribers for notifications
      * @return array email
      */
-    private function getSubscribers($linked_entity)
+    private function getSubscribers($guid)
     {
         $app          = $this->getContainer();
         $config       = $this->getConfig();
@@ -162,9 +162,9 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
 
         $repo      = $app['storage']->getRepository('comments');
         $aComments = $repo->findBy([
-            'linked_entity' => $linked_entity,
-            'status'        => 'published',
-            'notify'        => true
+            'guid'   => $guid,
+            'status' => 'published',
+            'notify' => true
         ]);
 
         if ($aComments) {

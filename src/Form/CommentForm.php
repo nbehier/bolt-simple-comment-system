@@ -56,7 +56,7 @@ class CommentForm extends AbstractType
                     ],
                   ]
             )
-            ->add('linked_entity',
+            ->add('guid',
                   'hidden'
             )
             ->add('notify',

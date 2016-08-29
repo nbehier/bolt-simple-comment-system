@@ -19,7 +19,7 @@ class Comment
     /**
      * @Assert\NotBlank()
      */
-    protected $linked_entity;
+    protected $guid;
 
     /**
      * @Assert\NotBlank()
@@ -47,14 +47,14 @@ class Comment
         $this->body = $body;
     }
 
-    public function getLinkedEntity()
+    public function getGuid()
     {
-        return $this->linked_entity;
+        return $this->guid;
     }
 
-    public function setLinkedEntity($linked_entity)
+    public function setGuid($guid)
     {
-        $this->linked_entity = $linked_entity;
+        $this->guid = $guid;
     }
 
     public function getAuthorDisplayName()

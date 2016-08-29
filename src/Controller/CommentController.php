@@ -83,7 +83,7 @@ class CommentController implements ControllerProviderInterface
                 'author_email'        => $comment->getAuthorEmail(),
                 'author_display_name' => $comment->getAuthorDisplayName(),
                 'body'                => $comment->getBody(),
-                'linked_entity'       => $comment->getLinkedEntity(),
+                'guid'                => $comment->getGuid(),
                 'notify'              => $comment->getNotify()
             ];
 

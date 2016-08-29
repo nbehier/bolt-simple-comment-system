@@ -55,7 +55,7 @@ comments:
         body:
             type: html
             height: 300px
-        linked_entity:
+        guid:
             type: text
             label: Parent entity
         notify:
