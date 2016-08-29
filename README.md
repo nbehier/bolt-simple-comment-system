@@ -24,7 +24,7 @@ Simple comment system - Bolt Extension
 - Notifications are not sent
 - Add Notification to website owner for approval
 - Add [mention.js](https://github.com/jakiestfu/Mention.js/)
-- Enhance Spam detection
+- Enhance Spam detection : add reCaptcha or list personal questions/responses or Akismet
 - Manage [IP Blacklist](https://github.com/morrelinko/spam-detector) ?
 
 ### Installation
