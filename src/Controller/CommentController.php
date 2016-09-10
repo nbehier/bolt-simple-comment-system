@@ -68,9 +68,31 @@ class CommentController implements ControllerProviderInterface
      */
     public function save(Application $app, Request $request)
     {
-        $comment = new Comment();
-        $form    = $app['form.factory']->createBuilder(new CommentForm(), $comment)
-                                       ->getForm();
+        $comment     = new Comment();
+        $formBuilder = $app['form.factory']->createBuilder(new CommentForm(), $comment);
+
+        if ( $config['features']['questions']['enabled'] ) {
+            $sUniqQuestion = $request->request->get('add_comment[questionuniq]');
+            $aQuestion     = $formBuilder->findAQuestion($sUniqQuestion);
+
+            $formBuilder->add(  'question',
+                                'text',
+                                [
+                                    'required' => true,
+                                    'mapped'   => false
+                                ]
+                            )
+                            ->add('questionuniq',
+                                'hidden',
+                                [
+                                    'mapped' => false
+                                ]
+                            );
+
+            // @todo validation
+        }
+
+        $form = $formBuilder->getForm();
 
         // Handle the form request data
         $form->handleRequest($request);

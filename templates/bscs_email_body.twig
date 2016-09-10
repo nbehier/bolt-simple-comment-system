@@ -1,0 +1,13 @@
+{#
+ # Passed in variables:
+ #   record    — Record data
+ #   recipient — Email recipient data (array fields : author_name, author_email)
+ #}
+{% setcontent thread = record.guid %}
+<p>Hi {{ recipient.author_name }},</p>
+<p>You are following the {{ thread.contenttype.singular_name }}: <a href="{{ app.paths.rooturl }}{{ thread.link|slice(1) }}">{{ thread.title }}</a>.<br/>
+A new {{ record.contenttype.singular_name }} has been published by {{ record.author_display_name }}:<br/>
+    <i>{{ record.body }}</i></p>
+<hr>
+
+<em>Sent from <a href="{{ app.paths.rooturl }}">{{ app.config.get('general/sitename') }}</a>.</em>

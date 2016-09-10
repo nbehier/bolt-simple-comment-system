@@ -21,7 +21,7 @@
             <div class="bscsCommentContainer bscsCommentNoAvatar">
             {% endif %}
                 <div class="bscsCommentAuthor">{{ comment.author_display_name }}</div>
-                <div class="bscsCommentTime" title="{{ comment.datecreated|localedatetime("%c") }}">{{ comment.datecreated|localedatetime("%c") }}</div>
+                <div class="bscsCommentTime" title="{{ comment.datecreated|localedatetime("%c") }}">{{ comment.datecreated|localedatetime("%A %B %e, %Y") }}</div>
                 <div class="bscsCommentBody">{{ comment.body }}</div>
             </div>
         </li>

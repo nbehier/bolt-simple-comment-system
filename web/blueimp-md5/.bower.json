@@ -9,6 +9,7 @@
     "commit": "aca5ff58688b634fec214164b705e5441e254073"
   },
   "_source": "https://github.com/blueimp/JavaScript-MD5.git",
-  "_target": "*",
-  "_originalSource": "blueimp-md5"
+  "_target": "^2.3.0",
+  "_originalSource": "blueimp-md5",
+  "_direct": true
 }

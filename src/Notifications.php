@@ -3,7 +3,8 @@
 namespace Bolt\Extension\Leskis\BoltSimpleCommentSystem;
 
 use Silex;
-use \Bolt\Storage\Entity\Content;
+use \Bolt\Legacy\Content;
+//use \Bolt\Storage\Entity\Content;
 
 /**
  * Notification class
@@ -114,13 +115,10 @@ class Notifications
     {
         // Sort out the "to whom" list
         if ($this->debug) {
-            $this->recipients = [
-                new Content([
-                    'title'        => 'Test Showcase',
-                    'slug'         => 'test',
-                    'author_email' => $this->debug_address
-                ])
-            ];
+            $this->recipients = [[
+                'author_name'  => 'Test',
+                'author_email' => $this->debug_address
+            ]];
         } else {
             // Get the subscribers
             $this->recipients = $recipients;
@@ -179,10 +177,10 @@ class Notifications
      * @param \Swift_Message $message
      * @param array          $recipient
      */
-    private function doSend(\Swift_Message $message, Content $recipient)
+    private function doSend(\Swift_Message $message, $recipient)
     {
         // Set the recipient for *this* message
-        $emailTo = $recipient->getAuthorEmail();
+        $emailTo = $recipient['author_email'];
         $message->setTo($emailTo);
 
         if ($this->app['mailer']->send($message)) {
@@ -201,8 +199,8 @@ class Notifications
         $this->contentType = $this->record->getContenttype();
 
         // Set Debug
-        $this->debug         = $this->config['features']['debug']['enabled'];
-        $this->debug_address = $this->config['features']['debug']['address'];
+        $this->debug         = $this->config['features']['notify']['debug']['enabled'];
+        $this->debug_address = $this->config['features']['notify']['debug']['address'];
 
         // Get Templates
         $this->subjectTpl = $this->config['templates']['emailsubject'];

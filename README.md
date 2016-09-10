@@ -76,7 +76,7 @@ comments:
 - When first installed, Extension defaults to turning debugging on in the configuration. This should be turned off when deployed in production. When debugging is on, all outbound emails are sent to the configured debug email address.
 - When you install Extension, you may have to create `app/config/extensions/boltsimplecommentsystem.leskis.yml`.
 
-**Tip:** If you want to modify the HTML templates, you should copy the `.yml` file to your `theme/` folder, and modify it there. Any changes in the file in the distribution might be overwritten after an update to the extension. For instance, if you copy `list_comments.twig` to `theme/base-2016/my_list_comments.twig`, the corresponding line in `config.yml` should be: `list: my_list_comments.twig`
+**Tip:** If you want to modify the HTML templates, you should copy the `.yml` file to your `theme/` folder, and modify it there. Any changes in the file in the distribution might be overwritten after an update to the extension. For instance, if you copy `bscs_list_comments.twig` to `theme/base-2016/my_list_comments.twig`, the corresponding line in `config.yml` should be: `list: my_list_comments.twig`
 
 ### Extension Configuration
 
@@ -85,17 +85,24 @@ features:
     comments:
         order: asc              # 'desc' if you want the new comments at the top
 #        default_approve: true  # 'false' if submited comments should get "draft" status by default
+    questions:
+        enabled: false
+#        list:
+#            - question: What is the color of the blue sky?
+#              responses: blue
+#            - question: What is the sum of two plus one?
+#              responses: [ three, 3 ]
     gravatar:
         enabled: true
 #        url: https://www.gravatar.com/avatar/XXX?s=40&d=mm
     emoticons:
         enabled: true
         animate: false
-    debug:
-        enabled: true
-        address: noreply@example.com # email used to send debug notifications
     notify:
         enabled: true
+        debug:
+            enabled: true
+            address: noreply@example.com # email used to send debug notifications
         email:
             from_name:  Your website
             from_email: your-email@your-website.com
@@ -103,10 +110,10 @@ features:
 #            replyto_email:  #
 
 # templates:
-#     form: extensions/leskis/bolt-simple-comment-system/templates/form_comment.twig
-#     list: extensions/leskis/bolt-simple-comment-system/templates/list_comments.twig
-#     emailbody: extensions/leskis/bolt-simple-comment-system/templates/email_body.twig
-#     emailsubject: extensions/leskis/bolt-simple-comment-system/templates/email_subject.twig
+#     form: extensions/leskis/bolt-simple-comment-system/templates/bscs_form_comment.twig
+#     list: extensions/leskis/bolt-simple-comment-system/templates/bscs_list_comments.twig
+#     emailbody: extensions/leskis/bolt-simple-comment-system/templates/bscs_email_body.twig
+#     emailsubject: extensions/leskis/bolt-simple-comment-system/templates/bscs_email_subject.twig
 
 # assets:
 #     frontend:

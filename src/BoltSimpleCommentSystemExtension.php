@@ -10,6 +10,7 @@ use Bolt\Extension\Leskis\BoltSimpleCommentSystem\Controller\CommentController;
 use Bolt\Extension\Leskis\BoltSimpleCommentSystem\Entity\Comment;
 use Bolt\Extension\Leskis\BoltSimpleCommentSystem\Form\CommentForm;
 use Bolt\Extension\SimpleExtension;
+use \Bolt\Storage\Entity\Content;
 use Silex\Application;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -66,10 +67,34 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
         $comment->setGuid($context['guid']);
 
         // @see https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2/creer-des-formulaires-avec-symfony2
-        $form = $app['form.factory']->createBuilder(new CommentForm(), $comment)
+        $formBuilder = $app['form.factory']->createBuilder(new CommentForm(), $comment)
                                     ->setAction($app['url_generator']->generate('bscs-comment-save') )//'/bscs-comment/save')
-                                    ->setMethod('POST')
-                                    ->getForm();
+                                    ->setMethod('POST');
+
+        if ( $config['features']['questions']['enabled'] ) {
+            $aQuestion = $formBuilder->chooseARandomQuestion($config);
+            if ( $aQuestion !== false ) {
+                $uniqID = $formBuilder->uniqID($aQuestion['question']);
+
+                $formBuilder->add(  'question',
+                                    'text',
+                                    [
+                                        'label'    => $aQuestion['question'],
+                                        'required' => true,
+                                        'mapped'   => false
+                                    ]
+                                )
+                                ->add('questionuniq',
+                                    'hidden',
+                                    [
+                                        'data'   => $uniqID,
+                                        'mapped' => false
+                                    ]
+                                );
+            }
+        }
+
+        $form = $formBuilder->getForm();
 
         // Render the Twig
         $html = $app['render']->render(
@@ -81,6 +106,11 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
     }
 
     public function gravatarTwigFilter($input)
+    {
+        return $this->uniqID($input);
+    }
+
+    private function uniqID($input)
     {
         return md5(trim(strtolower($input ) ) );
     }
@@ -94,7 +124,7 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
         $dispatcher->addListener(StorageEvents::PRE_SAVE, [$this, 'hookPreSave']);
     }
 
-     /**
+    /**
      * Pre-save hook
      * @param \Bolt\Events\StorageEvent $event
      */
@@ -111,19 +141,27 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
         }
 
         // Get the record : Bolt\Storage\Entity\Content
+        // @todo : in fact, it returns a Bolt\Legacy\Content… why ?
+        // So I can't use $record->getStatus() but $record->values['status']…
+        // dump($record); die();
         $record = $event->getContent();
+
+        $recordStatus      = $record->values['status'];
+        $recordId          = $record->values['id'];
+        $recordGuid        = $record->values['guid'];
+        $recordAuthorEmail = $record->values['author_email'];
 
         // Test if newly published
         $contentNewlyPublished = false;
         if (   $event->isCreate()
-            && $record->getStatus() == 'published') {
+            && $recordStatus == 'published') {
             $contentNewlyPublished = true;
         }
-        else if ($record->getStatus() == 'published') {
+        else if ($recordStatus == 'published') {
             // @todo : check if notification already sent
             // use a temporary file or a db table ?
             $repo = $app['storage']->getRepository($contenttype);
-            $oldRecord = $repo->find($record->getId() );
+            $oldRecord = $repo->find($recordId );
             if (   !empty($oldRecord)
                 && $oldRecord->getStatus() != 'published') {
                 $contentNewlyPublished = true;
@@ -131,13 +169,12 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
         }
 
         if ($contentNewlyPublished) {
-
             // Launch the notification
             $notify = new Notifications($app, $config, $record);
 
             // Search subscribers
             try {
-                $aSubscribers = $this->getSubscribers($record->getGuid() );
+                $aSubscribers = $this->getSubscribers($recordGuid, $recordAuthorEmail );
 
                 // Send email foreach subscriber
                 $notify->doNotification($aSubscribers);
@@ -154,7 +191,7 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
      * Get Subscribers for notifications
      * @return array email
      */
-    private function getSubscribers($guid)
+    private function getSubscribers($guid, $sExcludeEmail)
     {
         $app          = $this->getContainer();
         $config       = $this->getConfig();
@@ -170,12 +207,15 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
         if ($aComments) {
             // @todo Do not sent email to owner
             $aSubscribers = [];
+            $guidExcludeEmail = $this->uniqID($sExcludeEmail);
             foreach ($aComments as $aComment) {
-                $emailUniq = $this->gravatarTwigFilter($aComment['author_email']);
-                $aSubscribers[$emailUniq] = [
-                    'email' => $aComment['author_email'],
-                    'name'  => $aComment['author_display_name']
-                ];
+                $emailUniq = $this->uniqID($aComment['author_email']);
+                if ( $guidExcludeEmail != $emailUniq ) {
+                    $aSubscribers[$emailUniq] = [
+                        'author_name'  => $aComment['author_display_name'],
+                        'author_email' => $aComment['author_email']
+                    ];
+                }
             }
         }
 
@@ -299,6 +339,9 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
                     'order'           => 'asc',
                     'default_approve' => true
                 ],
+                'questions' => [
+                    'enabled' => false
+                ],
                 'gravatar' => [
                     'enabled' => true,
                     'url'     => 'https://www.gravatar.com/avatar/XXX?s=40&d=mm'
@@ -307,12 +350,12 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
                     'enabled' => true,
                     'animate' => false
                 ],
-                'debug' => [
-                    'enabled' => true,
-                    'address' => 'noreply@example.com'
-                ],
                 'notify' => [
                     'enabled' => true,
+                    'debug' => [
+                        'enabled' => true,
+                        'address' => 'noreply@example.com'
+                    ],
                     'email'   => [
                         'from_name'     => 'Your website',
                         'from_email'    => 'your-email@your-website.com',
@@ -323,10 +366,10 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
             ],
 
             'templates' => [
-                'form'         => 'form_comment.twig',
-                'list'         => 'list_comments.twig',
-                'emailbody'    => 'email_body.twig',
-                'emailsubject' => 'email_subject.twig'
+                'form'         => 'bscs_form_comment.twig',
+                'list'         => 'bscs_list_comments.twig',
+                'emailbody'    => 'bscs_email_body.twig',
+                'emailsubject' => 'bscs_email_subject.twig'
             ],
 
             'assets' => [

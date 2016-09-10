@@ -24,6 +24,11 @@
                     {{ form_widget(form.author_email) }}
                 </div>
             </div>
+            {% if extension_config.get('features').questions.enabled %}
+            <div class="bscsFieldRow bscsFieldQuestion">
+                {{ form_label(form.question) }} {{ form_widget(form.question) }}
+            </div>
+            {% endif %}
         </div>
         <div class="bscsFormFooter">
             <div class="bscsFieldRow bscsFieldNotify">

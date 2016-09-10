@@ -38,7 +38,7 @@
 #bscsFormContainer {}
 #bscsForm {
     background-color: #ccc;
-    border: 1px solid #999;
+    border: 1px solid #bbb;
     color: #333;
     padding: 0;
     position: relative;
@@ -75,6 +75,17 @@
     }
     .bscsFieldBody {
         margin-bottom: 4px;
+    }
+    .bscsFieldQuestion {
+        align-items: center;
+    }
+    .bscsFieldQuestion label {
+        flex-grow: 1;
+        padding-right: 1em;
+        text-align: right;
+    }
+    .bscsFieldQuestion input {
+        width: auto;
     }
 
 .bscsFormFooter {
