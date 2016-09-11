@@ -42,20 +42,21 @@
         </li>
     {% endfor %}
     </ul>
-    <script type="text/javascript">
-    var Bscs = Bscs || {};
-    {% if extension_config.get('features').emoticons.enabled %}
-    Bscs.emoticons = true;
-    {% endif %}
-    {% if extension_config.get('features').mention.enabled %}
-    Bscs.mention = {
-        enabled: true,
-        datas: [
-            {% for author in authors %}{ key: "{{ author.key }}", value: "{{ author.value|raw }}", avatar: "{{ author.avatar }}", count: {{ author.count }} },{% endfor %}
-        ]
-    }
-    {% endif %}
-    </script>
-
 </div>
 {% endif %}
+
+
+<script type="text/javascript">
+var Bscs = Bscs || {};
+{% if extension_config.get('features').emoticons.enabled %}
+Bscs.emoticons = true;
+{% endif %}
+{% if extension_config.get('features').mention.enabled %}
+Bscs.mention = {
+    enabled: true,
+    datas: [
+        {% if comments %}{% for author in authors %}{ key: "{{ author.key }}", value: "{{ author.value|raw }}", avatar: "{{ author.avatar }}", count: {{ author.count }} },{% endfor %}{% endif %}
+    ]
+}
+{% endif %}
+</script>

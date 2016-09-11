@@ -30,7 +30,7 @@
             this._defaults = defaults;
             this._name     = pluginName;
 
-            if ( Bscs !== undefined && Bscs.hasOwnProperty('mention') ) {
+            if ( typeof Bscs !== 'undefined' && Bscs.hasOwnProperty('mention') ) {
                 this.settings.mention = Bscs.mention.datas;
             }
 
@@ -155,7 +155,7 @@ $( function() {
     }
 
     // Add dom markup for Mention
-    if ( Bscs !== undefined && Bscs.hasOwnProperty('mention') ) {
+    if ( typeof Bscs !== 'undefined' && Bscs.hasOwnProperty('mention') ) {
         var $comments = $('.bscsCommentBody'),
             authors   = Bscs.mention.datas;
 
