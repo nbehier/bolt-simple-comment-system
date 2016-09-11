@@ -10,7 +10,7 @@
     {{ form_errors(form) }}
     {{ form_start(form, { attr: { id: 'bscsForm' } } ) }}
         <div class="bscsFormBody">
-            <div class="bscsFieldRow bscsFieldBody">
+            <div class="bscsFieldRow bscsFieldBody {% if extension_config.get('features').mention.enabled %}js-bscs-mention{% endif %}">
                 {{ form_widget(form.body) }}
             </div>
             <div class="bscsFieldRow">

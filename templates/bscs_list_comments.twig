@@ -10,7 +10,22 @@
 <div class="bscsComments {{ extension_config.get('features').emoticons.enabled ? 'jsDisplayEmoticons' }}"{% if extension_config.get('features').emoticons.enabled %} data-emoticons-animate="{{ extension_config.get('features').emoticons.animate ? 'true' : 'false' }}"{% endif %}>
     <h3>{{ __('Comments') }}</h3>
     <ul>
+    {% set authors = {} %}
     {% for comment in comments %}
+        {# Create authors array for Tribute Mention Script #}
+        {% set author_key = comment.author_display_name|safestring(true) %}
+        {% if attribute(authors, author_key) is defined %}
+            {% set count = attribute(attribute(authors, author_key), 'count') + 1 %}
+        {% else %}
+            {% set count = 1 %}
+        {% endif %}
+        {% set authors = authors|merge({ (author_key): {
+                'key'    : author_key,
+                'value'  : comment.author_display_name,
+                'avatar' : comment.author_email|bscs_gravatar,
+                'count'  : count
+            } }) %}
+
         <li class="bscsComment" id="{{ guid }}">
             {% if extension_config.get('features').gravatar.enabled %}
             <div class="bscsCommentAvatar" title="{{ __('Specify your avatar with gravatar.com') }}">
@@ -27,5 +42,20 @@
         </li>
     {% endfor %}
     </ul>
+    <script type="text/javascript">
+    var Bscs = Bscs || {};
+    {% if extension_config.get('features').emoticons.enabled %}
+    Bscs.emoticons = true;
+    {% endif %}
+    {% if extension_config.get('features').mention.enabled %}
+    Bscs.mention = {
+        enabled: true,
+        datas: [
+            {% for author in authors %}{ key: "{{ author.key }}", value: "{{ author.value|raw }}", avatar: "{{ author.avatar }}", count: {{ author.count }} },{% endfor %}
+        ]
+    }
+    {% endif %}
+    </script>
+
 </div>
 {% endif %}

@@ -16,6 +16,7 @@
   ],
   "dependencies": {
     "blueimp-md5": "latest",
-    "jQuery-CSSEmoticons": "git@github.com:JangoSteve/jQuery-CSSEmoticons.git#^0.2.9"
+    "jQuery-CSSEmoticons": "git@github.com:JangoSteve/jQuery-CSSEmoticons.git#^0.2.9",
+    "tribute": "^2.0.5"
   }
 }

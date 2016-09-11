@@ -19,7 +19,8 @@
                 nameAuthorSelector:      '#addcomment_author_display_name',
                 bodySelector:            '#addcomment_body',
                 avatarContainerSelector: '.bscsFieldAvatar',
-                gravatarUrl:             'https://www.gravatar.com/avatar/XXX?s=40&d=mm'
+                gravatarUrl:             'https://www.gravatar.com/avatar/XXX?s=40&d=mm',
+                mentiongravatarUrl:      'https://www.gravatar.com/avatar/XXX?s=30&d=mm'
             };
 
         // The actual plugin constructor
@@ -28,6 +29,10 @@
             this.settings  = $.extend( {}, defaults, options );
             this._defaults = defaults;
             this._name     = pluginName;
+
+            if ( Bscs !== undefined && Bscs.hasOwnProperty('mention') ) {
+                this.settings.mention = Bscs.mention.datas;
+            }
 
             this.init();
         }
@@ -38,6 +43,7 @@
                 this.secureForm();
                 this.addFormEvents();
                 this.displayAvatar();
+                this.displayMention();
             },
             secureForm: function() {},
             addFormEvents: function() {
@@ -89,6 +95,33 @@
 
                 $avatar.html('<img src="' + gravatar + '" alt="avatar"/>');
             },
+            displayMention: function() {
+                var $fields     = $('.js-bscs-mention').find('textarea'),
+                    $avatar     = $(this.form).find(this.settings.avatarContainerSelector),
+                    gravatar    = this.settings.mentiongravatarUrl,
+                    tributeConf = {
+                        trigger: '@',
+                        menuItemTemplate: function (item) {
+                            return item.original.value;
+                        }
+                    };
+
+                if ( $fields.length == 0 ) {
+                    return;
+                }
+
+                tributeConf.values = this.settings.mention;
+
+                if ($avatar.length > 0) {
+                    tributeConf.menuItemTemplate = function (item) {
+                        var gravatar_url = gravatar.replace('XXX', item.original.avatar);
+                        return '<img src="' + gravatar_url + '">' + item.original.value;
+                    };
+                }
+
+                var tribute = new Tribute(tributeConf);
+                tribute.attach($fields);
+            },
             submit: function() {
                 // @todo submit
                 console.log('submit');
@@ -112,11 +145,35 @@
 $( function() {
     $( "#bscsForm" ).jqSimpleCommentsSystem({});
 
+    // Add Emoticons if necessary
     var $emoticonsContainer = $('.jsDisplayEmoticons');
     if ($emoticonsContainer.length > 0) {
         var config = $emoticonsContainer.data('emoticons-animate');
         $emoticonsContainer.find('.bscsCommentBody').emoticonize({
             'animate': config
         });
+    }
+
+    // Add dom markup for Mention
+    if ( Bscs !== undefined && Bscs.hasOwnProperty('mention') ) {
+        var $comments = $('.bscsCommentBody'),
+            authors   = Bscs.mention.datas;
+
+        var authorNames = $.map(authors, function(author, idx) {
+            return '@' + author.value;
+        });
+
+        var regex = new RegExp(authorNames.join("|"),"gi");
+
+        $comments.each(function(idx) {
+            var $this = $(this),
+                html  = $this.html();
+
+            html = html.replace(regex, function(matched){
+              return '<span class="bscs-tribute">' + matched + '</span>';
+            });
+
+            $this.html(html);
+        })
     }
 } );

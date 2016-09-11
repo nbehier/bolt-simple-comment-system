@@ -273,6 +273,20 @@ class BoltSimpleCommentSystemExtension extends SimpleExtension
         }
 
         if (   $config['assets']['frontend']['load_js']
+            && $config['features']['mention']['enabled'] ) {
+            $mention_js = new JavaScript();
+            $mention_js->setFileName('tribute/dist/tribute.min.js')
+                ->setLate(true)
+                ->setPriority(98);
+
+            $mention_css = new Stylesheet();
+            $mention_css->setFileName('tribute/dist/tribute.css');
+
+            $assets[] = $mention_js;
+            $assets[] = $mention_css;
+        }
+
+        if (   $config['assets']['frontend']['load_js']
             && $config['features']['emoticons']['enabled'] ) {
             $emoticons_js = new JavaScript();
             $emoticons_js->setFileName('jQuery-CSSEmoticons/javascripts/jquery.cssemoticons.min.js')

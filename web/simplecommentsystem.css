@@ -114,3 +114,17 @@
         .bscsFieldAction button:hover {
             background-color: #444;
         }
+
+.tribute-container li {
+    font-size: 12px;
+    white-space: nowrap;
+}
+.tribute-container img {
+    display: inline-block;
+    margin: 0 1rem 0 0;
+}
+.bscs-tribute {
+    background-color: #efefef;
+    display: inline-block;
+    padding: 0.1rem 0.3rem;
+}

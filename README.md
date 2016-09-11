@@ -14,6 +14,8 @@ Simple comment system - Bolt Extension
 - Use [gravatar](https://fr.gravatar.com/) if possible
 - Use [CSS Emoticons](https://os.alfajango.com/css-emoticons/)
 - Use [Honeypot technique](http://jennamolby.com/how-to-prevent-form-spam-by-using-the-honeypot-technique/) for spam
+- Notifications are sent to followers of a thread
+- Add mention system [with Tribute.js](https://github.com/zurb/tribute)
 
 ### Requirements
 - Bolt 3.x installation
@@ -22,9 +24,7 @@ Simple comment system - Bolt Extension
 ### Known limitations and futures features
 - Comment Entity have to be create manually on contentypes.yml
 - Translates only load after Bolt 3.1.X
-- Notifications are not sent
 - Add Notification to website owner for approval
-- Add [mention.js](https://github.com/jakiestfu/Mention.js/)
 - Enhance Spam detection : add reCaptcha or list personal questions/responses or Akismet
 - Manage [IP Blacklist](https://github.com/morrelinko/spam-detector) ?
 
@@ -98,6 +98,8 @@ features:
     emoticons:
         enabled: true
         animate: false
+    mention:
+        enabled: true
     notify:
         enabled: true
         debug:
